@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Battambang', sans-serif;
-            background-color: #FDF8EB;
+            background: linear-gradient(135deg, #FDF8EB 0%, #F4ECF7 50%, #EBF5FB 100%);
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -30,97 +30,171 @@
                     #F1C40F 20px, #F1C40F 40px,
                     #2ECC71 40px, #2ECC71 60px,
                     #3498DB 60px, #3498DB 80px,
-                    #2C3E50 80px, #2C3E50 100px);
+                    #9B59B6 80px, #9B59B6 100px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .dashboard-header {
-            background-color: #1c2b42;
+            background: linear-gradient(90deg, #1c2b42 0%, #2c3e50 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .game-card {
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            max-width: 950px;
+            background-color: rgba(255, 255, 255, 0.96);
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(28, 43, 66, 0.12);
+            max-width: 1080px;
             width: 95%;
-            margin: 30px auto;
-            border: 1px solid #f0f0f0;
+            margin: 25px auto;
+            border: 2px solid #ffffff;
+            backdrop-filter: blur(10px);
         }
 
         canvas {
-            background-color: #ffffff;
-            border-radius: 12px;
+            background: radial-gradient(circle, #ffffff 60%, #f8fafc 100%);
+            border-radius: 20px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             height: auto;
             aspect-ratio: 1 / 1;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), inset 0 0 15px rgba(0, 0, 0, 0.03);
+            border: 2px solid #e2e8f0;
         }
 
         .btn-yellow {
-            background-color: #F5B041;
+            background: linear-gradient(135deg, #F5B041 0%, #F39C12 100%);
             color: #1c2b42;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 15px rgba(243, 156, 18, 0.35);
         }
 
         .btn-yellow:hover {
-            background-color: #F39C12;
-            transform: scale(1.02);
+            background: linear-gradient(135deg, #F39C12 0%, #D68910 100%);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.45);
         }
 
         .btn-yellow:disabled {
-            background-color: #FAD7A1;
+            background: #FAD7A1;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .btn-green {
-            background-color: #2ECC71;
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
             color: white;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.35);
         }
 
         .btn-green:hover {
-            background-color: #27AE60;
-            transform: scale(1.02);
+            background: linear-gradient(135deg, #27AE60 0%, #1E8449 100%);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.45);
         }
 
         .marble-legend {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: inline-block;
-            box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.3), 2px 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: inset -4px -4px 8px rgba(0, 0, 0, 0.35), 2px 3px 6px rgba(0, 0, 0, 0.25);
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .marble-legend::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 5px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .marble-legend:hover {
+            transform: scale(1.15);
+        }
+
+        .score-row {
+            transition: all 0.2s;
+        }
+
+        .score-row:hover {
+            transform: translateX(4px);
+        }
+
+        .mode-btn {
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border-color: #1e40af;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
         }
     </style>
 </head>
 
 <body>
 
-    <header class="dashboard-header text-white flex items-center justify-between px-4 py-3">
+    <header class="dashboard-header text-white flex items-center justify-between px-6 py-3.5">
         <div class="flex items-center gap-4">
             <button
-                class="bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-full text-sm flex items-center gap-2 transition"
+                class="bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-full text-sm flex items-center gap-2 transition border border-white/15"
                 onclick="window.location.href='../../index.html'">
                 <span>&larr;</span> ត្រឡប់
             </button>
-            <h1 class="text-xl font-moul flex items-center gap-2 tracking-wider">
-                <span class="text-2xl">🎯</span> ល្បែងកង់លេខ
+            <h1 class="text-xl md:text-2xl font-moul flex items-center gap-2 tracking-wider">
+                <span class="text-2xl">🎯</span> <span id="headerTitle">ល្បែងកង់លេខ (៥ ខ្ទង់)</span>
             </h1>
+        </div>
+        <div class="hidden sm:flex items-center gap-2 text-xs bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+            <span id="headerSubtitle">✨ រាយ • ដប់ • រយ • ពាន់ • ម៉ឺន</span>
         </div>
     </header>
     <div class="color-stripe w-full"></div>
 
-    <main class="flex-grow flex items-center justify-center py-8">
+    <main class="flex-grow flex items-center justify-center py-6">
         <div class="game-card p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center justify-center">
 
             <!-- Left Panel -->
-            <div class="flex flex-col items-center md:items-start space-y-6 w-full md:w-[45%]">
-                <div class="text-center md:text-left w-full">
-                    <h2 class="text-2xl font-bold text-blue-600 mb-2 font-moul">គ្រាប់ឃ្លី</h2>
-                    <p class="text-gray-500 text-sm mb-4">បោះឃ្លីដើម្បីស្វែងរកតម្លៃលេខ</p>
+            <div class="flex flex-col items-center md:items-start space-y-5 w-full md:w-[43%]">
+                
+                <!-- ផ្ទាំងជ្រើសរើសកំណត់ខ្ទង់ -->
+                <div class="w-full bg-white p-4 rounded-2xl border-2 border-indigo-100 shadow-sm">
+                    <label class="block text-sm font-bold text-indigo-900 mb-2.5 flex items-center gap-2">
+                        <span>⚙️</span> កំណត់ចំនួនខ្ទង់លេខ៖
+                    </label>
+                    <div class="grid grid-cols-4 gap-2" id="digitSelector">
+                        <button type="button" data-digits="2" class="mode-btn py-2 px-2 rounded-xl font-bold text-sm border-2 border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100">
+                            ២ ខ្ទង់<br><span class="text-[11px] font-normal opacity-80">(ត្រឹមដប់)</span>
+                        </button>
+                        <button type="button" data-digits="3" class="mode-btn py-2 px-2 rounded-xl font-bold text-sm border-2 border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100">
+                            ៣ ខ្ទង់<br><span class="text-[11px] font-normal opacity-80">(ត្រឹមរយ)</span>
+                        </button>
+                        <button type="button" data-digits="4" class="mode-btn py-2 px-2 rounded-xl font-bold text-sm border-2 border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100">
+                            ៤ ខ្ទង់<br><span class="text-[11px] font-normal opacity-80">(ត្រឹមពាន់)</span>
+                        </button>
+                        <button type="button" data-digits="5" class="mode-btn active py-2 px-2 rounded-xl font-bold text-sm border-2 border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100">
+                            ៥ ខ្ទង់<br><span class="text-[11px] font-normal opacity-80">(ត្រឹមម៉ឺន)</span>
+                        </button>
+                    </div>
+                </div>
 
-                    <div class="grid grid-cols-3 gap-3 w-32 mx-auto md:mx-0">
+                <div class="text-center md:text-left w-full bg-gradient-to-br from-blue-50/80 to-indigo-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-1">
+                        <h2 class="text-2xl font-bold text-blue-700 font-moul">គ្រាប់ឃ្លី</h2>
+                        <span class="bg-blue-600 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">៩ គ្រាប់</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">បោះឃ្លីចូលក្នុងរង្វង់ខ្ទង់នីមួយៗដើម្បីស្វែងរកតម្លៃលេខ</p>
+
+                    <div class="grid grid-cols-9 md:grid-cols-3 gap-3 w-fit mx-auto md:mx-0 bg-white p-3.5 rounded-xl border border-blue-100 shadow-inner">
                         <div class="marble-legend bg-purple-600"></div>
                         <div class="marble-legend bg-orange-500"></div>
                         <div class="marble-legend bg-pink-400"></div>
@@ -136,50 +210,88 @@
                 <!-- Action Buttons -->
                 <div class="w-full space-y-3">
                     <button id="startBtn"
-                        class="btn-yellow font-bold text-lg px-8 py-3 rounded-xl w-full shadow-md border-2 border-yellow-500">
-                        ចាប់ផ្ដើមបោះ
+                        class="btn-yellow font-bold text-lg px-8 py-3.5 rounded-xl w-full border-2 border-yellow-400 flex items-center justify-center gap-2">
+                        <span>🎲</span> <span id="startBtnText">ចាប់ផ្ដើមបោះ</span>
                     </button>
 
                     <button id="verifyBtn"
-                        class="btn-green font-bold text-lg px-8 py-3 rounded-xl w-full shadow-md border-2 border-green-600 hidden">
-                        ផ្ទៀងផ្ទាត់ចម្លើយ
+                        class="btn-green font-bold text-lg px-8 py-3.5 rounded-xl w-full border-2 border-green-500 hidden flex items-center justify-center gap-2">
+                        <span>✅</span> <span>ផ្ទៀងផ្ទាត់ចម្លើយ</span>
                     </button>
                 </div>
 
-                <!-- Result Board (Matches Image 3) -->
+                <!-- Result Board -->
                 <div id="resultBoard"
-                    class="w-full bg-[#f4f7fc] p-6 rounded-2xl border-2 border-blue-100 hidden shadow-sm">
-                    <h3 class="text-center font-bold text-blue-800 text-xl mb-4 font-moul">លទ្ធផល</h3>
+                    class="w-full bg-gradient-to-b from-[#f8faff] to-[#eef4ff] p-5 rounded-2xl border-2 border-blue-200 hidden shadow-md">
+                    <h3 class="text-center font-bold text-blue-900 text-xl mb-3 font-moul flex items-center justify-center gap-2">
+                        <span>🏆</span> លទ្ធផលតាមខ្ទង់
+                    </h3>
 
-                    <hr class="border-blue-200 mb-4">
+                    <hr class="border-blue-200 mb-3">
 
-                    <div class="flex justify-between items-center text-lg mb-3">
-                        <span class="text-gray-800 font-bold">ខ្ទង់ដប់ (រង្វង់ក្រៅ)៖</span>
-                        <span id="tensCount" class="font-bold text-red-600 text-2xl">០</span>
+                    <div class="space-y-2 text-base">
+                        <div id="rowTenThousands" class="score-row flex justify-between items-center bg-purple-50/90 px-3.5 py-1.5 rounded-xl border border-purple-200">
+                            <span class="text-purple-900 font-bold flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-purple-600 inline-block"></span>
+                                ខ្ទង់ម៉ឺន (១០,០០០)៖
+                            </span>
+                            <span id="tenThousandsCount" class="font-bold text-purple-700 text-xl">០</span>
+                        </div>
+
+                        <div id="rowThousands" class="score-row flex justify-between items-center bg-blue-50/90 px-3.5 py-1.5 rounded-xl border border-blue-200">
+                            <span class="text-blue-900 font-bold flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span>
+                                ខ្ទង់ពាន់ (១,០០០)៖
+                            </span>
+                            <span id="thousandsCount" class="font-bold text-blue-700 text-xl">០</span>
+                        </div>
+
+                        <div id="rowHundreds" class="score-row flex justify-between items-center bg-emerald-50/90 px-3.5 py-1.5 rounded-xl border border-emerald-200">
+                            <span class="text-emerald-900 font-bold flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span>
+                                ខ្ទង់រយ (១០០)៖
+                            </span>
+                            <span id="hundredsCount" class="font-bold text-emerald-700 text-xl">០</span>
+                        </div>
+
+                        <div id="rowTens" class="score-row flex justify-between items-center bg-amber-50/90 px-3.5 py-1.5 rounded-xl border border-amber-200">
+                            <span class="text-amber-900 font-bold flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                                ខ្ទង់ដប់ (១០)៖
+                            </span>
+                            <span id="tensCount" class="font-bold text-amber-600 text-xl">០</span>
+                        </div>
+
+                        <div id="rowOnes" class="score-row flex justify-between items-center bg-rose-50/90 px-3.5 py-1.5 rounded-xl border border-rose-200">
+                            <span class="text-rose-900 font-bold flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-rose-600 inline-block"></span>
+                                ខ្ទង់រាយ (១)៖
+                            </span>
+                            <span id="onesCount" class="font-bold text-rose-600 text-xl">០</span>
+                        </div>
+
+                        <div class="score-row flex justify-between items-center bg-gray-100 px-3.5 py-1.5 rounded-xl border border-gray-200">
+                            <span class="text-gray-700 font-bold flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-gray-400 inline-block"></span>
+                                ក្រៅរង្វង់ ឬលើខ្សែ៖
+                            </span>
+                            <span id="missCount" class="font-bold text-gray-500 text-xl">០</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center text-lg mb-3">
-                        <span class="text-gray-800 font-bold">ខ្ទង់រាយ (រង្វង់ក្នុង)៖</span>
-                        <span id="onesCount" class="font-bold text-blue-600 text-2xl">០</span>
-                    </div>
-                    <div class="flex justify-between items-center text-lg mb-4">
-                        <span class="text-gray-800 font-bold">ក្រៅរង្វង់៖</span>
-                        <span id="missCount" class="font-bold text-gray-500 text-2xl">០</span>
-                    </div>
 
-                    <hr class="border-blue-200 mb-4">
+                    <hr class="border-blue-200 my-3">
 
-                    <div class="text-center">
-                        <span class="text-gray-600 text-lg font-bold">សរុប</span>
-                        <div id="totalScore" class="text-[64px] font-moul text-blue-700 mt-2">០</div>
+                    <div class="text-center bg-white py-3 px-4 rounded-xl border border-blue-100 shadow-inner">
+                        <span class="text-gray-600 text-base font-bold">ចំនួនសរុប</span>
+                        <div id="totalScore" class="text-4xl md:text-5xl font-moul text-blue-700 mt-1 tracking-wider">០</div>
                     </div>
                 </div>
             </div>
 
             <!-- Right Panel -->
-            <div class="w-full md:w-[55%] flex justify-center relative">
+            <div class="w-full md:w-[57%] flex justify-center relative">
                 <div id="overlay"
                     class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none transition-opacity duration-500">
-
                 </div>
                 <canvas id="gameCanvas" width="600" height="600"></canvas>
             </div>
@@ -191,6 +303,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startBtn = document.getElementById('startBtn');
+        const startBtnText = document.getElementById('startBtnText');
         const verifyBtn = document.getElementById('verifyBtn');
         const resultBoard = document.getElementById('resultBoard');
         const overlay = document.getElementById('overlay');
@@ -200,9 +313,10 @@
         const centerX = width / 2;
         const centerY = height / 2;
 
-        const INNER_RADIUS = 120; // ខ្ទង់រាយ (រង្វង់ក្នុង)
-        const OUTER_RADIUS = 260; // ខ្ទង់ដប់ (រង្វង់ក្រៅ)
-        const MARBLE_RADIUS = 15;
+        // ចំនួនខ្ទង់បច្ចុប្បន្ន (លំនាំដើម ៥ ខ្ទង់)
+        let currentDigitCount = 5;
+        const MAX_OUTER_RADIUS = 280;
+        const MARBLE_RADIUS = 12;
 
         const ANIMATION_DURATION = 5000;
 
@@ -211,6 +325,66 @@
             '#dc2626', '#2563eb', '#22c55e',
             '#22d3ee', '#facc15', '#1f2937'
         ];
+
+        // ទិន្នន័យគោលតាមខ្ទង់នីមួយៗពីតូចទៅធំ (ខ្ទង់ទី១ ដល់ ខ្ទង់ទី៥)
+        const basePlaceValues = [
+            {
+                zone: 'ones',
+                label: 'ខ្ទង់រាយ',
+                fill: '#FDEDEC',
+                stroke: '#E74C3C',
+                textColor: '#C0392B'
+            },
+            {
+                zone: 'tens',
+                label: 'ខ្ទង់ដប់',
+                fill: '#FEF9E7',
+                stroke: '#F39C12',
+                textColor: '#B7950B'
+            },
+            {
+                zone: 'hundreds',
+                label: 'ខ្ទង់រយ',
+                fill: '#E8F8F5',
+                stroke: '#16A085',
+                textColor: '#117A65'
+            },
+            {
+                zone: 'thousands',
+                label: 'ខ្ទង់ពាន់',
+                fill: '#EBF5FB',
+                stroke: '#2980B9',
+                textColor: '#1F618D'
+            },
+            {
+                zone: 'ten_thousands',
+                label: 'ខ្ទង់ម៉ឺន',
+                fill: '#F5EEF8',
+                stroke: '#8E44AD',
+                textColor: '#7D3C98'
+            }
+        ];
+
+        // គណនាទំហំរង្វង់ដោយស្វ័យប្រវត្តិទៅតាមចំនួនខ្ទង់ដែលបានជ្រើសរើស
+        function getActiveRings() {
+            const step = MAX_OUTER_RADIUS / currentDigitCount;
+            const active = [];
+            // រៀបពីរង្វង់ធំក្រៅគេ មករង្វង់តូចក្នុងគេ ដើម្បីគូរត្រួតលើគ្នាបានត្រឹមត្រូវ
+            for (let i = currentDigitCount - 1; i >= 0; i--) {
+                const pv = basePlaceValues[i];
+                const radius = Math.round((i + 1) * step);
+                const prevRadius = Math.round(i * step);
+                const fontSize = currentDigitCount <= 2 ? 28 : (currentDigitCount === 3 ? 25 : (currentDigitCount === 4 ? 23 : 20));
+                active.push({
+                    ...pv,
+                    index: i,
+                    radius,
+                    prevRadius,
+                    fontSize
+                });
+            }
+            return active;
+        }
 
         let marbles = [];
         let gameState = 'idle';
@@ -235,93 +409,126 @@
 
         function drawTarget() {
             ctx.clearRect(0, 0, width, height);
+            const activeRings = getActiveRings();
 
-            // ខ្ទង់ដប់ (Outer)
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, OUTER_RADIUS, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-            ctx.lineWidth = 8;
-            ctx.strokeStyle = '#000000';
-            ctx.stroke();
+            // គូររង្វង់ពីក្រៅចូលក្នុង
+            activeRings.forEach((ring) => {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, ring.radius, 0, Math.PI * 2);
+                ctx.fillStyle = ring.fill;
+                ctx.fill();
+                ctx.lineWidth = 4.5;
+                ctx.strokeStyle = ring.stroke;
+                ctx.stroke();
+            });
 
-            // ខ្ទង់រាយ (Inner)
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, INNER_RADIUS, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-            ctx.lineWidth = 6;
-            ctx.stroke();
+            // បន្ថែមខ្សែដាច់ៗតុបតែងស្រទាប់ក្នុងឱ្យមើលទៅទាក់ទាញ
+            ctx.save();
+            ctx.setLineDash([4, 6]);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
+            activeRings.forEach((ring) => {
+                if (ring.prevRadius > 0) {
+                    const midR = (ring.radius + ring.prevRadius) / 2;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, midR, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            });
+            ctx.restore();
 
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // Text ខ្ទង់ដប់
-            ctx.font = 'bold 36px Moul';
-            ctx.fillStyle = '#E74C3C';
-            ctx.save();
-            ctx.translate(centerX, centerY - OUTER_RADIUS + 40);
-            ctx.fillText('ខ្ទង់ដប់', 0, 0);
-            ctx.restore();
+            // គូរអក្សរឈ្មោះខ្ទង់នីមួយៗ
+            activeRings.forEach((ring) => {
+                ctx.font = `bold ${ring.fontSize}px Moul`;
+                ctx.fillStyle = ring.textColor;
 
-            // Text ខ្ទង់រាយ
-            ctx.font = 'bold 36px Moul';
-            ctx.fillStyle = '#E74C3C';
-            ctx.fillText('ខ្ទង់រាយ', centerX, centerY);
+                // គណនាទីតាំងអក្សរឱ្យនៅចំកណ្ដាលចន្លោះរង្វង់នីមួយៗ
+                let textY;
+                if (ring.prevRadius === 0) {
+                    textY = centerY; // ខ្ទង់រាយនៅចំកណ្ដាលរង្វង់តូច
+                } else {
+                    textY = centerY - (ring.radius + ring.prevRadius) / 2;
+                }
+
+                // គូរស្រមោលអក្សរពណ៌សពីក្រោយដើម្បីឱ្យអក្សរច្បាស់ងាយអាន
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.strokeText(ring.label, centerX, textY);
+                ctx.fillText(ring.label, centerX, textY);
+            });
         }
 
         function drawMarble(x, y, color) {
+            // ស្រមោលគ្រាប់ឃ្លី
+            ctx.beginPath();
+            ctx.arc(x + 2, y + 3, MARBLE_RADIUS, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+            ctx.fill();
+
+            // តួគ្រាប់ឃ្លី
             ctx.beginPath();
             ctx.arc(x, y, MARBLE_RADIUS, 0, Math.PI * 2);
             ctx.fillStyle = color;
             ctx.fill();
 
+            // ពន្លឺចាំងលើគ្រាប់ឃ្លី
             ctx.beginPath();
-            ctx.arc(x - 4, y - 4, MARBLE_RADIUS * 0.3, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.arc(x - 3.5, y - 3.5, MARBLE_RADIUS * 0.32, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
             ctx.fill();
 
+            // គែមគ្រាប់ឃ្លី
             ctx.beginPath();
             ctx.arc(x, y, MARBLE_RADIUS, 0, Math.PI * 2);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = 'rgba(0,0,0,0.35)';
             ctx.stroke();
         }
 
         function generateFinalPositions() {
+            const step = MAX_OUTER_RADIUS / currentDigitCount;
+            const safePad = MARBLE_RADIUS + 3;
+
             marbles.forEach(marble => {
                 const rand = Math.random();
                 let distance, angle;
 
-                // បែងចែកទីតាំង៖ ៣៥% ខ្ទង់រាយ, ៤៥% ខ្ទង់ដប់, ២០% ក្រៅ ឬលើខ្សែ
-                if (rand < 0.35) {
-                    marble.zone = 'ones';
-                    // ធានាថាធ្លាក់ក្នុងរង្វង់តូចពិតប្រាកដ (មិនប៉ះខ្សែ)
-                    distance = Math.random() * (INNER_RADIUS - MARBLE_RADIUS - 15);
-                } else if (rand < 0.8) {
-                    marble.zone = 'tens';
-                    // ធានាថាធ្លាក់ចន្លោះរង្វង់ទាំងពីរ (មិនប៉ះខ្សែទាំងសងខាង)
-                    distance = INNER_RADIUS + MARBLE_RADIUS + 5 + Math.random() * (OUTER_RADIUS - INNER_RADIUS - MARBLE_RADIUS * 2 - 10);
-                } else {
-                    marble.zone = 'miss'; // មិនគិតពិន្ទុ
+                // 86% ធ្លាក់ចូលក្នុងរង្វង់ខ្ទង់ណាមួយដែលបានកំណត់ និង 14% ធ្លាក់លើខ្សែ ឬក្រៅរង្វង់
+                if (rand < 0.86) {
+                    const ringIdx = Math.floor(Math.random() * currentDigitCount);
+                    marble.zone = basePlaceValues[ringIdx].zone;
 
-                    const missRand = Math.random();
-                    if (missRand < 0.3) {
-                        // ធ្លាក់ចំលើខ្សែរង្វង់ក្នុង
-                        distance = INNER_RADIUS;
-                    } else if (missRand < 0.6) {
-                        // ធ្លាក់ចំលើខ្សែរង្វង់ក្រៅ
-                        distance = OUTER_RADIUS;
+                    const innerR = ringIdx * step;
+                    const outerR = (ringIdx + 1) * step;
+
+                    if (ringIdx === 0) {
+                        distance = Math.random() * Math.max(5, outerR - safePad);
                     } else {
-                        // ធ្លាក់ក្រៅរង្វង់ធំទាំងស្រុង
-                        const maxDist = Math.min(width / 2, height / 2) - MARBLE_RADIUS;
-                        distance = OUTER_RADIUS + MARBLE_RADIUS + 5 + Math.random() * (maxDist - OUTER_RADIUS - MARBLE_RADIUS - 10);
+                        const availableSpace = Math.max(4, (outerR - innerR) - safePad * 2);
+                        distance = innerR + safePad + Math.random() * availableSpace;
+                    }
+                } else {
+                    marble.zone = 'miss'; // មិនគិតពិន្ទុ (លើខ្សែ ឬក្រៅរង្វង់)
+                    if (Math.random() < 0.65) {
+                        // ធ្លាក់ចំលើខ្សែរង្វង់ណាមួយ
+                        const boundaryIdx = Math.floor(Math.random() * currentDigitCount) + 1;
+                        distance = boundaryIdx * step;
+                    } else {
+                        // ធ្លាក់ក្រៅរង្វង់ធំបំផុត
+                        distance = MAX_OUTER_RADIUS + MARBLE_RADIUS + 2;
                     }
                 }
 
                 angle = Math.random() * Math.PI * 2;
                 marble.finalX = centerX + Math.cos(angle) * distance;
                 marble.finalY = centerY + Math.sin(angle) * distance;
+
+                // ការពារកុំឱ្យចេញក្រៅផ្ទៃ Canvas
+                marble.finalX = Math.max(MARBLE_RADIUS + 3, Math.min(width - MARBLE_RADIUS - 3, marble.finalX));
+                marble.finalY = Math.max(MARBLE_RADIUS + 3, Math.min(height - MARBLE_RADIUS - 3, marble.finalY));
 
                 marble.vx = (Math.random() - 0.5) * 30;
                 marble.vy = (Math.random() - 0.5) * 30;
@@ -405,21 +612,50 @@
             return num.toString().split('').map(digit => khmerNums[digit] || digit).join('');
         }
 
+        function updateResultRowsVisibility() {
+            document.getElementById('rowTenThousands').classList.toggle('hidden', currentDigitCount < 5);
+            document.getElementById('rowThousands').classList.toggle('hidden', currentDigitCount < 4);
+            document.getElementById('rowHundreds').classList.toggle('hidden', currentDigitCount < 3);
+        }
+
+        function updateHeaderInfo() {
+            const khmerDigits = { 2: '២', 3: '៣', 4: '៤', 5: '៥' };
+            const subtitles = {
+                2: '✨ រាយ • ដប់',
+                3: '✨ រាយ • ដប់ • រយ',
+                4: '✨ រាយ • ដប់ • រយ • ពាន់',
+                5: '✨ រាយ • ដប់ • រយ • ពាន់ • ម៉ឺន'
+            };
+            document.getElementById('headerTitle').innerText = `ល្បែងកង់លេខ (${khmerDigits[currentDigitCount]} ខ្ទង់)`;
+            document.getElementById('headerSubtitle').innerText = subtitles[currentDigitCount];
+        }
+
         function calculateAndShowScore() {
+            let tenThousands = 0;
+            let thousands = 0;
+            let hundreds = 0;
             let tens = 0;
             let ones = 0;
-            let misses = 0; // គ្រាប់ដែលនៅក្រៅ ឬលើខ្សែ
+            let misses = 0;
 
             marbles.forEach(marble => {
-                if (marble.zone === 'tens') tens++;
+                if (marble.zone === 'ten_thousands') tenThousands++;
+                else if (marble.zone === 'thousands') thousands++;
+                else if (marble.zone === 'hundreds') hundreds++;
+                else if (marble.zone === 'tens') tens++;
                 else if (marble.zone === 'ones') ones++;
                 else misses++;
             });
 
-            // ការគណនាសរុប (គិតតែគ្រាប់ក្នុងរង្វង់ដប់ និងរង្វង់រាយប៉ុណ្ណោះ)
-            const total = (tens * 10) + ones;
+            // គណនាចំនួនសរុបតាមខ្ទង់ដែលបានជ្រើសរើស
+            const total = (tenThousands * 10000) + (thousands * 1000) + (hundreds * 100) + (tens * 10) + ones;
 
-            // បង្ហាញលទ្ធផល (ម៉ូតដូចរូបភាពទី៣ គ្មានពាក្យពន្យល់បន្ថែម)
+            updateResultRowsVisibility();
+
+            // បង្ហាញលទ្ធផលតាមខ្ទង់នីមួយៗ
+            document.getElementById('tenThousandsCount').innerText = toKhmerNum(tenThousands);
+            document.getElementById('thousandsCount').innerText = toKhmerNum(thousands);
+            document.getElementById('hundredsCount').innerText = toKhmerNum(hundreds);
             document.getElementById('tensCount').innerText = toKhmerNum(tens);
             document.getElementById('onesCount').innerText = toKhmerNum(ones);
             document.getElementById('missCount').innerText = toKhmerNum(misses);
@@ -429,16 +665,42 @@
 
             verifyBtn.classList.add('hidden');
             startBtn.classList.remove('hidden');
-            startBtn.innerText = "បោះម្ដងទៀត";
+            startBtnText.innerText = "បោះម្ដងទៀត";
             startBtn.disabled = false;
 
             gameState = 'done';
         }
 
+        // មុខងារប្ដូរចំនួនខ្ទង់លេខ
+        document.querySelectorAll('#digitSelector .mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (gameState === 'throwing' || gameState === 'settling') return;
+
+                currentDigitCount = parseInt(btn.getAttribute('data-digits'));
+
+                document.querySelectorAll('#digitSelector .mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                updateHeaderInfo();
+                updateResultRowsVisibility();
+
+                // កំណត់ស្ថានភាពល្បែងឡើងវិញពេលប្ដូរខ្ទង់
+                resultBoard.classList.add('hidden');
+                verifyBtn.classList.add('hidden');
+                startBtn.classList.remove('hidden');
+                startBtn.disabled = false;
+                startBtnText.innerText = "ចាប់ផ្ដើមបោះ";
+                gameState = 'idle';
+
+                initMarbles();
+                drawTarget();
+            });
+        });
+
         startBtn.addEventListener('click', () => {
             overlay.style.opacity = '0';
             startBtn.disabled = true;
-            startBtn.innerText = "កំពុងបោះ...";
+            startBtnText.innerText = "កំពុងបោះ...";
             resultBoard.classList.add('hidden');
             verifyBtn.classList.add('hidden');
 
@@ -456,6 +718,7 @@
             calculateAndShowScore();
         });
 
+        updateResultRowsVisibility();
         initMarbles();
         drawTarget();
 
